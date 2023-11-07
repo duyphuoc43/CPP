@@ -1,10 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <windows.h>
 using namespace std;
-// def sever()
-// {
-    
-// }
+
 int main()
 {
     while (true)
@@ -15,19 +14,24 @@ int main()
         {
             newtext += text;
         }
+		
         if (newtext[0]=='0')
         {
             newtext.erase(newtext.begin());
-            cout<<newtext<<endl;
-            cin >> reptext;
-            if(reptext =="q")
+            cout<<"SEVER: "<<newtext<<endl;
+           	getline(cin,reptext);
+           	if(reptext == "q")
             {
                 break;
             }
+            reptext = '1'+reptext;
             ofstream file ("share_file.txt");
-            file << "1"+reptext <<endl;
+            file <<reptext<<endl;
             file.close();
+            cout<<"wait sever reply"<<endl;
+        	Sleep(10000);
         }
-    }
 
+    }
+	return 0;
 }
