@@ -8,12 +8,10 @@ using namespace std;
 int main()
 {
     ofstream file ("share_file.txt");
-    file << "Sever turn on" << endl;
+    file << "Sever turn on" << std::endl;
     file.close();
 
     pid_t pid = fork();
-    bool check_client = true;
-    bool check_sever = true;
     while (true)
     {
         if (pid == -1)
@@ -21,7 +19,7 @@ int main()
             cout<<(stderr, "Fork failed\n");
             return 1;
         }
-        else if (pid == 0 && check_client)
+        else if (pid == 0)
         {
             string text,newtext,reptext;
             ifstream readfile ("share_file.txt");
@@ -29,6 +27,7 @@ int main()
             {
                 newtext += text;
             }
+            
             cout<<"SEVER: "<<newtext<<endl;
             readfile.close();
             getline(cin,reptext);
@@ -36,37 +35,29 @@ int main()
             file <<reptext<<endl;
             file.close();
             cout<<"wait sever reply"<<endl;
-            int status;
-            if (waitpid(pid, &status, WNOHANG) != 0)
-            {
-                check_sever = false;
-                //sleep(3);
-            }
         }
-        else if (pid > 0 && check_sever)
+        else if (pid != 0) 
         {
-            string text,newtext,reptext;
-            ifstream readfile ("share_file.txt");
-            while (getline(readfile,text))
-            {
-                newtext += text;
-            }
-            cout<<"CLIENT:  "<<newtext<<endl;
-            readfile.close();
-            getline(cin,reptext);
-            ofstream file ("share_file.txt");
-            file << reptext <<endl;
-            file.close();
-            cout<<"wait client reply"<<endl;
-        
             int status;
-            if (waitpid(pid, &status, WNOHANG) != 0) 
+            if (waitpid(pid, &status, WNOHANG) == 0)
             {
-                check_client = false;
-                //     sleep(3);
+                string text,newtext,reptext;
+                ifstream readfile ("share_file.txt");
+                
+                while (getline(readfile,text))
+                {
+                    newtext += text;
+                }
+                cout<<"CLIENT:  "<<newtext<<endl;
+                readfile.close();
+                getline(cin,reptext);
+                ofstream file ("share_file.txt");
+                file << reptext <<endl;
+                file.close();
+                cout<<"wait client reply"<<endl;
             }
         }
     }
 
-return 0;
+    return 0;
 }
