@@ -12,7 +12,7 @@ int main()
     file.close();
 
     pid_t pid = fork();
-    bool check_client = false;
+    bool check_client = true;
     bool check_sever = true;
     while (true)
     {
@@ -39,8 +39,7 @@ int main()
             int status;
             if (waitpid(pid, &status, WNOHANG) != 0)
             {
-                check_sever = true;
-                check_client = false;
+                check_sever = false;
             }
             // else
             // {
@@ -68,8 +67,7 @@ int main()
             int status;
             if (waitpid(pid, &status, WNOHANG) != 0) 
             {
-                check_client = true;
-                check_sever = false;
+                check_client = false;
             }
             // else
             // {
