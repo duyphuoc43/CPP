@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     ofstream file ("share_file.txt");
-    file << "Sever turn on" << std::endl;
+    file << "Sever turn on" << endl;
     file.close();
 
     pid_t pid = fork();
@@ -40,13 +40,8 @@ int main()
             if (waitpid(pid, &status, WNOHANG) != 0)
             {
                 check_sever = false;
+                //sleep(3);
             }
-            // else
-            // {
-            //     sleep(3);
-            // }
-
-
         }
         else if (pid > 0 && check_sever)
         {
@@ -68,13 +63,8 @@ int main()
             if (waitpid(pid, &status, WNOHANG) != 0) 
             {
                 check_client = false;
+                //     sleep(3);
             }
-            // else
-            // {
-            //     sleep(3);
-            // }
-
-  
         }
     }
 
