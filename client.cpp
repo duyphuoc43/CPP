@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <windows.h>
+#include <unistd.h>
 using namespace std;
 
 int main()
@@ -29,7 +29,7 @@ int main()
             file <<reptext<<endl;
             file.close();
             cout<<"wait sever reply"<<endl;
-        	Sleep(10000);
+        	sleep(3);
         }
 
     }

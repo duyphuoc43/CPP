@@ -1,11 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <windows.h>
+#include <unistd.h>
 using namespace std;
-// def sever()
-// {
-    
-// }
+
 int main()
 {
     ofstream file ("share_file.txt");
@@ -32,7 +29,7 @@ int main()
             file << '0'+reptext <<endl;
             file.close();
             cout<<"wait client reply"<<endl;
-            Sleep(10000);
+            sleep(3);
         }
     }
 
