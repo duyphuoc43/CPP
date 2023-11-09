@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     ofstream file ("share_file.txt");
-    file << "Sever turn on" << std::endl;
+    file << "Sever turn on" << endl;
     file.close();
 
     pid_t pid = fork();
