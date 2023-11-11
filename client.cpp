@@ -1,37 +1,46 @@
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <unistd.h>
+#include <windows.h>
 using namespace std;
 
-int main()
+int main() 
 {
-    while (true)
+    while (true) 
     {
-        string text,newtext,reptext;
-        ifstream readfile ("share_file.txt");
-        while (getline(readfile,text))
-        {
-            newtext += text;
-        }
-		
-        if (newtext[0]=='0')
-        {
-            newtext.erase(newtext.begin());
-            cout<<"SEVER: "<<newtext<<endl;
-           	getline(cin,reptext);
-           	if(reptext == "q")
-            {
-                break;
-            }
-            reptext = '1'+reptext;
-            ofstream file ("share_file.txt");
-            file <<reptext<<endl;
-            file.close();
-            cout<<"wait sever reply"<<endl;
-        	sleep(3);
-        }
+        HANDLE hFile = CreateFile(L"C:\\Users\\phuocvnd\\Desktop\\Project2\\test.txt",
+            GENERIC_READ | GENERIC_WRITE,
+            0,
+            NULL,
+            OPEN_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
 
+        if (hFile == INVALID_HANDLE_VALUE) 
+        {
+            cout << "Can not open this file" << endl;
+            Sleep(1000);
+        }
+        else
+        {
+            OVERLAPPED overlapped;
+            LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlapped);
+
+            SetFilePointer(hFile, 0, NULL, FILE_BEGIN);
+
+            const int bufferSize = 1024;
+            char buffer[bufferSize];
+            DWORD bytesRead;
+
+            while (ReadFile(hFile, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) 
+            {
+                cout.write(buffer, bytesRead);
+            }
+            cout << endl;
+
+            UnlockFileEx(hFile, 0, MAXDWORD, MAXDWORD, &overlapped);
+
+            CloseHandle(hFile);
+        }
+        Sleep(1000);
     }
-	return 0;
+    return 0;
 }
