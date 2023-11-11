@@ -1,36 +1,40 @@
 #include <iostream>
-#include <fstream>
-#include <unistd.h>
+#include <windows.h>
 using namespace std;
 
-int main()
+int main() 
 {
-    ofstream file ("share_file.txt");
-    file << "0Sever turn on" << std::endl;
-    file.close();
-    while (true)
+    while (true) 
     {
-        string text,newtext,reptext;
-        ifstream readfile ("share_file.txt");
-        while (getline(readfile,text))
+        HANDLE hFile = CreateFile(
+            L"C:\\Users\\phuocvnd\\Desktop\\Project2\\test.txt",
+            GENERIC_READ | GENERIC_WRITE,
+            0,
+            NULL,
+            OPEN_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
+        if (hFile == INVALID_HANDLE_VALUE) 
         {
-            newtext += text;
+            cout << "Can not open this file" << endl;
         }
-        if (newtext[0]=='1')
+        else
         {
-            newtext.erase(newtext.begin());
-            cout<<"CLIENT:  "<<newtext<<endl;
-            getline(cin,reptext);
-            if(reptext == "q")
-            {
-                break;
-            }
-            ofstream file ("share_file.txt");
-            file << '0'+reptext <<endl;
-            file.close();
-            cout<<"wait client reply"<<endl;
-            sleep(3);
-        }
-    }
+            OVERLAPPED overlapped;
+            LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlapped);
+            cout << "Sever is wirting" << endl;
+            string text = "Server has written to this file";
+            const char* dataToWrite = text.c_str();
+            DWORD bytesWritten;
+            WriteFile(hFile, dataToWrite, strlen(dataToWrite), &bytesWritten, NULL);
 
+            Sleep(5000);
+
+            UnlockFileEx(hFile, 0, MAXDWORD, MAXDWORD, &overlapped);
+            CloseHandle(hFile);
+            cout << "Sever was wirted" << endl;
+        }
+        Sleep(3000);
+    }
+    return 0;
 }
